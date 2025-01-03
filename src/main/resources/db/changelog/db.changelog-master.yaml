@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1.0.1"
+      author: "eokten"
+      changes:
+        - createSequence:
+            sequenceName: "seq_products"
+        - createTable:
+            tableName: "products"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  constraints:
+                    primaryKey: true
+                  defaultValueSequenceNext: "seq_products"
+              - column:
+                  name: "name"
+                  type: "text"
+              - column:
+                  name: "price"
+                  type: "numeric"
+  - changeSet:
+      id: "1.0.2"
+      author: "eokten"
+      changes:
+        - addColumn:
+            tableName: "products"
+            columns:
+              - column:
+                  name: "product_availability"
+                  type: "smallint"
+                  value: 0
