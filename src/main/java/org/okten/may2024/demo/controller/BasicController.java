@@ -1,6 +1,5 @@
 package org.okten.may2024.demo.controller;
 
-import org.okten.may2024.demo.config.DemoBeansConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;

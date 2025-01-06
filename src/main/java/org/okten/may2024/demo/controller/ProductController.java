@@ -3,7 +3,6 @@ package org.okten.may2024.demo.controller;
 import lombok.RequiredArgsConstructor;
 import org.okten.may2024.demo.entity.Product;
 import org.okten.may2024.demo.repository.ProductRepository;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
