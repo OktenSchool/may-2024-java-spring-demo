@@ -1,8 +1,12 @@
 package org.okten.may2024.demo.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.okten.may2024.demo.dto.CreateReviewDto;
+import org.okten.may2024.demo.dto.ReviewDto;
 import org.okten.may2024.demo.entity.Product;
 import org.okten.may2024.demo.repository.ProductRepository;
+import org.okten.may2024.demo.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +17,8 @@ import java.util.List;
 public class ProductController {
 
     private final ProductRepository productRepository;
+
+    private final ReviewService reviewService;
 
     @PostMapping("/products")
     public Product createProduct(@RequestBody Product product) {
@@ -38,5 +44,15 @@ public class ProductController {
         } else {
             return productRepository.findAll();
         }
+    }
+
+    @PostMapping("/products/{id}/reviews")
+    public ReviewDto createReview(@PathVariable(name = "id") Long productId, @RequestBody @Valid CreateReviewDto createReviewDto) {
+        return reviewService.createReview(productId, createReviewDto);
+    }
+
+    @GetMapping("/products/{productId}/reviews")
+    public List<ReviewDto> getReviews(@PathVariable Long productId) {
+        return reviewService.getReviews(productId);
     }
 }
