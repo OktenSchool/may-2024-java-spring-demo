@@ -8,6 +8,7 @@ import org.okten.may2024.demo.entity.Product;
 import org.okten.may2024.demo.repository.ProductRepository;
 import org.okten.may2024.demo.service.ReviewService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ProductController {
 
     private final ReviewService reviewService;
 
+    @Secured("SELLER")
     @PostMapping("/products")
     public Product createProduct(@RequestBody Product product) {
         return productRepository.save(product);
