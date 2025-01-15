@@ -1,11 +1,10 @@
 package org.okten.may2024.demo.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.okten.may2024.demo.dto.CreateReviewDto;
-import org.okten.may2024.demo.dto.ReviewDto;
-import org.okten.may2024.demo.entity.Product;
-import org.okten.may2024.demo.repository.ProductRepository;
+import org.okten.may2024.api.controller.ProductsApi;
+import org.okten.may2024.api.dto.ProductDto;
+import org.okten.may2024.api.dto.ReviewDto;
+import org.okten.may2024.demo.service.ProductService;
 import org.okten.may2024.demo.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -15,46 +14,59 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductController implements ProductsApi {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     private final ReviewService reviewService;
 
     @Secured("SELLER")
-    @PostMapping("/products")
-    public Product createProduct(@RequestBody Product product) {
-        return productRepository.save(product);
+    @Override
+    public ResponseEntity<ProductDto> createProduct(ProductDto productDto) {
+        return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
-    @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
-        return ResponseEntity.of(productRepository.findById(id));
+    @Override
+    public ResponseEntity<Void> deleteProduct(Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value = "/products", produces = "application/json")
-    public List<Product> getProducts(
-            @RequestParam(name = "minPrice", required = false) Double minPrice,
-            @RequestParam(name = "maxPrice", required = false) Double maxPrice
-    ) {
+    @Override
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+        return ResponseEntity.of(productService.findById(id)
+                .map(productDto -> {
+                    List<ReviewDto> reviews = reviewService.getReviews(id);
+                    productDto.setReviews(reviews);
+                    return productDto;
+                }));
+    }
+
+    @Override
+    public ResponseEntity<List<ProductDto>> getProducts(Double minPrice, Double maxPrice) {
         if (minPrice != null && maxPrice != null) {
-            return productRepository.findAllByPriceBetweenWithSql(minPrice, maxPrice);
+            return ResponseEntity.ok(productService.findAllByPriceBetween(minPrice, maxPrice));
         } else if (minPrice != null) {
-            return productRepository.findAllByPriceGreaterThan(minPrice);
+            return ResponseEntity.ok(productService.findAllByPriceGreaterThan(minPrice));
         } else if (maxPrice != null) {
-            return productRepository.findAllByPriceLessThan(maxPrice);
+            return ResponseEntity.ok(productService.findAllByPriceLessThan(maxPrice));
         } else {
-            return productRepository.findAll();
+            return ResponseEntity.ok(productService.findAll());
         }
     }
 
-    @PostMapping("/products/{id}/reviews")
-    public ReviewDto createReview(@PathVariable(name = "id") Long productId, @RequestBody @Valid CreateReviewDto createReviewDto) {
-        return reviewService.createReview(productId, createReviewDto);
+    @Override
+    public ResponseEntity<ProductDto> modifyProduct(Long id, ProductDto productDto) {
+        return ResponseEntity.of(productService.update(id, productDto));
     }
 
-    @GetMapping("/products/{productId}/reviews")
-    public List<ReviewDto> getReviews(@PathVariable Long productId) {
-        return reviewService.getReviews(productId);
+    @Override
+    public ResponseEntity<ProductDto> modifyProductPartially(Long id, ProductDto productDto) {
+        return ResponseEntity.of(productService.updatePartially(id, productDto));
+    }
+
+    @Override
+    public ResponseEntity<ReviewDto> postReview(Long productId, ReviewDto reviewDto) {
+        return ResponseEntity.ok(reviewService.createReview(productId, reviewDto));
     }
 }

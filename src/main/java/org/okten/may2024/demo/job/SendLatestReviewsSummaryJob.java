@@ -2,14 +2,13 @@ package org.okten.may2024.demo.job;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.okten.may2024.demo.dto.ReviewDto;
+import org.okten.may2024.api.dto.ReviewDto;
 import org.okten.may2024.demo.dto.SendMailDto;
 import org.okten.may2024.demo.service.MailService;
 import org.okten.may2024.demo.service.ProductService;
 import org.okten.may2024.demo.service.ReviewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,10 +48,10 @@ public class SendLatestReviewsSummaryJob {
                                 .findById(entry.getKey())
                                 .stream()
                                 .flatMap(productDto -> entry.getValue().stream()
-                                        .mapToInt(ReviewDto::rating)
+                                        .mapToInt(ReviewDto::getRating)
                                         .average()
                                         .stream()
-                                        .mapToObj(averageRating -> "Product '%s' has '%s' average rating for the last 30 seconds".formatted(productDto.name(), averageRating))
+                                        .mapToObj(averageRating -> "Product '%s' has '%s' average rating for the last 30 seconds".formatted(productDto.getName(), averageRating))
                                 ))
                 .collect(Collectors.joining("\n"));
 

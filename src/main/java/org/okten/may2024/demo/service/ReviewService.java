@@ -1,8 +1,7 @@
 package org.okten.may2024.demo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.okten.may2024.demo.dto.CreateReviewDto;
-import org.okten.may2024.demo.dto.ReviewDto;
+import org.okten.may2024.api.dto.ReviewDto;
 import org.okten.may2024.demo.entity.Review;
 import org.okten.may2024.demo.mapper.ReviewMapper;
 import org.okten.may2024.demo.repository.ReviewRepository;
@@ -24,7 +23,7 @@ public class ReviewService {
 
     private final ReviewMapper reviewMapper;
 
-    public ReviewDto createReview(Long productId, CreateReviewDto dto) {
+    public ReviewDto createReview(Long productId, ReviewDto dto) {
         Review review = reviewMapper.mapToReview(productId, dto);
         Review savedReview = reviewRepository.save(review);
         return reviewMapper.mapToDto(savedReview);

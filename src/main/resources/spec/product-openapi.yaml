@@ -1,0 +1,246 @@
+openapi: 3.0.3
+
+info:
+  title: Product Service API
+  description: |-
+    OpenAPI specification example based on Product model
+  version: 0.0.1
+  # API-first design
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: product
+  - name: review
+    description: Product reviews
+
+paths:
+  "/products":
+    get:
+      tags:
+        - product
+      summary: "Get all products"
+      description: "Fetch all existing products"
+      operationId: getProducts
+      parameters:
+        - in: query
+          name: minPrice
+          required: false
+          schema:
+            type: number
+            format: double
+          description: "Product min price"
+        - in: query
+          name: maxPrice
+          required: false
+          schema:
+            type: number
+            format: double
+          description: "Product max price"
+      responses:
+        '200':
+          $ref: "#/components/responses/ProductList"
+    post:
+      tags:
+        - product
+      summary: "Create product"
+      operationId: createProduct
+      requestBody:
+        $ref: "#/components/requestBodies/Product"
+      responses:
+        '201':
+          $ref: "#/components/responses/Product"
+        '400':
+          description: Invalid request
+        '422':
+          description: Validation exception
+  "/products/{id}":
+    get:
+      tags:
+        - product
+      summary: "Get specific product"
+      description: "Get product by id"
+      operationId: getProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Product ID"
+      responses:
+        '200':
+          $ref: "#/components/responses/Product"
+        '400':
+          description: Invalid request
+    put:
+      tags:
+        - product
+      summary: "Modify specific product"
+      description: "Update only product properties included in the body"
+      operationId: modifyProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Product ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Product"
+      responses:
+        '201':
+          $ref: "#/components/responses/Product"
+        '400':
+          description: Invalid request
+        '422':
+          description: Validation exception
+    patch:
+      tags:
+        - product
+      summary: "Modify specific product partially"
+      description: "Update only product properties included in the body"
+      operationId: modifyProductPartially
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Product ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Product"
+      responses:
+        '201':
+          $ref: "#/components/responses/Product"
+        '400':
+          description: Invalid request
+        '422':
+          description: Validation exception
+    delete:
+      tags:
+        - product
+      summary: "Delete product"
+      operationId: deleteProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Product ID"
+      responses:
+        '204':
+          description: Product deleted
+  "/products/{productId}/reviews":
+    post:
+      tags:
+        - review
+      summary: "Post product review"
+      operationId: postReview
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Product ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Review"
+      responses:
+        '201':
+          $ref: "#/components/responses/Review"
+        '400':
+          description: Invalid request
+        '422':
+          description: Validation exception
+
+components:
+  schemas:
+    Review:
+      type: object
+      properties:
+        reviewText:
+          type: string
+        rating:
+          type: integer
+          format: int32
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Review time
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 10
+          description: Product ID
+        name:
+          type: string
+          example: "Asus Laptop Model 1"
+          minLength: 3
+          maxLength: 64
+        price:
+          type: number
+          format: double
+          example: 63999.99
+        availability:
+          type: string
+          description: Product availability
+          example: OUT_OF_STOCK
+          enum:
+            - AVAILABLE
+            - OUT_OF_STOCK
+            - DISCONTINUED
+            - NOT_AVAILABLE
+        reviews:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Review'
+  responses:
+    Product:
+      description: Product
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+    Review:
+      description: Product review
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Review'
+    ProductList:
+      description: Product list
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Product'
+  requestBodies:
+    Product:
+      description: Product to be created
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+    Review:
+      description: Review to be posted
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Review'

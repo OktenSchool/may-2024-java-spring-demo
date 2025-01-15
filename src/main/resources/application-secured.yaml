@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: MAY 2024 SPRING DEMO
+  profiles:
+    active: secured
