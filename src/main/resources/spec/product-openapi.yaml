@@ -18,6 +18,8 @@ tags:
 paths:
   "/products":
     get:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Get all products"
@@ -42,6 +44,8 @@ paths:
         '200':
           $ref: "#/components/responses/ProductList"
     post:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Create product"
@@ -57,6 +61,8 @@ paths:
           description: Validation exception
   "/products/{id}":
     get:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Get specific product"
@@ -76,6 +82,8 @@ paths:
         '400':
           description: Invalid request
     put:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Modify specific product"
@@ -99,6 +107,8 @@ paths:
         '422':
           description: Validation exception
     patch:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Modify specific product partially"
@@ -122,6 +132,8 @@ paths:
         '422':
           description: Validation exception
     delete:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Delete product"
@@ -139,6 +151,8 @@ paths:
           description: Product deleted
   "/products/{productId}/reviews":
     post:
+      security:
+        - BearerAuth: []
       tags:
         - review
       summary: "Post product review"
@@ -162,6 +176,12 @@ paths:
           description: Validation exception
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Review:
       type: object
