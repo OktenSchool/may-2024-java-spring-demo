@@ -33,4 +33,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://dev-d8rm3bg4cwywnjin.eu.auth0.com/.well-known/jwks.json
+          issuer-uri: https://dev-d8rm3bg4cwywnjin.eu.auth0.com/
+  kafka:
+    producer:
+      topic: product-deleted-events
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
