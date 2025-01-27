@@ -1,17 +1,16 @@
 package org.okten.may2024.demo.mapper;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.okten.may2024.api.dto.ProductDto;
 import org.okten.may2024.demo.entity.Product;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
+    @Mapping(target = "availability", source = "productAvailability")
     ProductDto mapToDto(Product product);
 
+    @InheritInverseConfiguration
     Product mapToEntity(ProductDto dto);
 
     Product updateEntity(@MappingTarget Product entity, ProductDto updateWith);

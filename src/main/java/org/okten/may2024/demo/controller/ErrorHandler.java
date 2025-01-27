@@ -44,15 +44,6 @@ public class ErrorHandler {
                         .build());
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorDto handleGeneralException(Exception e) {
-        return ErrorDto.builder()
-                .message(e.getMessage())
-                .time(OffsetDateTime.now())
-                .build();
-    }
-
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDto handleAuthenticationException(AuthenticationException e) {
